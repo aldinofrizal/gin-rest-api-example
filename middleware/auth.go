@@ -36,7 +36,31 @@ func Authentication() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user", user)
+		c.Set("user", &user)
+		c.Next()
+	}
+}
+
+func ContentDeleteAuthorization() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		loggedUser := c.MustGet("user").(*models.User)
+		contentToDelete := models.Content{}
+		result := models.DB.First(&contentToDelete, c.Param("id"))
+		if result.Error != nil || result.RowsAffected == 0 {
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+				"message": "Data not found",
+			})
+			return
+		}
+
+		if contentToDelete.ID != loggedUser.ID {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"message": "Please provide valid access token in your headers",
+			})
+			return
+		}
+
+		c.Set("contentToDelete", &contentToDelete)
 		c.Next()
 	}
 }

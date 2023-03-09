@@ -14,14 +14,17 @@ func SetupAdminRoute(r *gin.RouterGroup) {
 		users.POST("/login", userController.Login)
 	}
 
-	restaurants := r.Group("/restaurants")
+	contents := r.Group("/contents")
 	contentController := controller.ContentController{}
-	restaurants.Use(middleware.Authentication())
+	contents.Use(middleware.Authentication())
 	{
-		restaurants.GET("/", contentController.Index)
-		restaurants.GET("/:id", contentController.Detail)
-		restaurants.POST("/", contentController.Create)
-		restaurants.PUT("/:id", contentController.Update)
-		restaurants.DELETE("/:id", contentController.Delete)
+		contents.GET("/", contentController.Index)
+		contents.GET("/:id", contentController.Detail)
+		contents.POST("/", contentController.Create)
+		contents.PUT("/:id", contentController.Update)
+		contents.DELETE("/:id",
+			middleware.ContentDeleteAuthorization(),
+			contentController.Delete,
+		)
 	}
 }

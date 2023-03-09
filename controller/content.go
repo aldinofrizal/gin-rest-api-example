@@ -13,7 +13,7 @@ type ContentController struct {
 }
 
 func (r *ContentController) Index(c *gin.Context) {
-	loggedUser := c.MustGet("user").(models.User)
+	loggedUser := c.MustGet("user").(*models.User)
 	contents := []models.Content{}
 	result := models.DB.Where("author_id = ?", loggedUser.ID).Find(&contents)
 
@@ -49,7 +49,7 @@ func (r *ContentController) Detail(c *gin.Context) {
 }
 
 func (r *ContentController) Create(c *gin.Context) {
-	loggedUser := c.MustGet("user").(models.User)
+	loggedUser := c.MustGet("user").(*models.User)
 	var newContent request.Content
 
 	if err := c.ShouldBindJSON(&newContent); err != nil {
@@ -92,10 +92,16 @@ func (r *ContentController) Update(c *gin.Context) {
 }
 
 func (r *ContentController) Delete(c *gin.Context) {
-	id := c.Param("id")
+	content := c.MustGet("contentToDelete").(*models.Content)
+	result := models.DB.Delete(&content)
 
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "Content Delete",
-		"id":      id,
+	if result.Error != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, result.Error.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Content Deleted",
+		"id":      content.ID,
 	})
 }
