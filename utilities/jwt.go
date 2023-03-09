@@ -21,3 +21,24 @@ func GenerateToken(claims jwt.MapClaims) (string, error) {
 
 	return tokenString, nil
 }
+
+func DecodeToken(tokenString string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signin method: %v", token.Header["alg"])
+		}
+
+		return []byte(SECRET), nil
+	})
+
+	if err != nil {
+		return jwt.MapClaims{}, err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
+	} else {
+		return jwt.MapClaims{}, err
+	}
+}

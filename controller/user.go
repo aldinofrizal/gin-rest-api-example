@@ -16,7 +16,7 @@ func (u *UserController) Register(c *gin.Context) {
 	var registerInput request.Register
 
 	if err := c.ShouldBindJSON(&registerInput); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": utilities.ParseError(err),
 		})
 		return
@@ -43,7 +43,7 @@ func (u *UserController) Register(c *gin.Context) {
 	result := models.DB.Create(&user)
 
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, result.Error.Error())
+		c.AbortWithStatusJSON(http.StatusBadRequest, result.Error.Error())
 		return
 	}
 
@@ -67,14 +67,14 @@ func (u *UserController) Login(c *gin.Context) {
 	result := models.DB.Where("email = ?", loginUser.Email).First(&userFind)
 
 	if result.RowsAffected == 0 {
-		c.JSON(http.StatusUnauthorized, gin.H{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error": userFind.InvalidLogin(),
 		})
 		return
 	}
 
 	if !utilities.CheckPasswordHash(loginUser.Password, userFind.Password) {
-		c.JSON(http.StatusUnauthorized, gin.H{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error": userFind.InvalidLogin(),
 		})
 		return
@@ -82,7 +82,7 @@ func (u *UserController) Login(c *gin.Context) {
 
 	token, _ := utilities.GenerateToken(jwt.MapClaims{"ID": userFind.ID})
 
-	c.JSON(http.StatusCreated, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Success Login",
 		"user":    userFind.GetResponse(),
 		"token":   token,

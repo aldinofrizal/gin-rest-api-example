@@ -10,10 +10,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Name        string `gorm:"not null"`
-	Email       string `gorm:"uniqueIndex;not null"`
-	Password    string `gorm:"not null"`
-	Restaurants []Restaurant
+	Name     string    `gorm:"not null"`
+	Email    string    `gorm:"uniqueIndex;not null"`
+	Password string    `gorm:"not null"`
+	Contents []Content `gorm:"foreignKey:AuthorId"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
