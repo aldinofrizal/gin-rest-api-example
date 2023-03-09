@@ -15,13 +15,13 @@ func SetupAdminRoute(r *gin.RouterGroup) {
 	}
 
 	restaurants := r.Group("/restaurants")
-	restaurantController := controller.RestaurantController{}
+	contentController := controller.ContentController{}
 	restaurants.Use(middleware.Authentication())
 	{
-		restaurants.GET("/", restaurantController.Index)
-		restaurants.GET("/:id", restaurantController.Detail)
-		restaurants.POST("/", restaurantController.Create)
-		restaurants.PUT("/:id", restaurantController.Update)
-		restaurants.DELETE("/:id", restaurantController.Delete)
+		restaurants.GET("/", contentController.Index)
+		restaurants.GET("/:id", contentController.Detail)
+		restaurants.POST("/", contentController.Create)
+		restaurants.PUT("/:id", contentController.Update)
+		restaurants.DELETE("/:id", contentController.Delete)
 	}
 }
