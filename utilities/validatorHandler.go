@@ -7,8 +7,8 @@ import (
 )
 
 type ApiBindError struct {
-	Field string
-	Msg   string
+	Field string `json:"field"`
+	Msg   string `json:"message"`
 }
 
 func generateErrorMessage(tag string) string {

@@ -7,6 +7,7 @@ import (
 	"github.com/aldinofrizal/gin-ozamot-api/entity/request"
 	"github.com/aldinofrizal/gin-ozamot-api/utilities"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type UserController struct{}
@@ -53,12 +54,37 @@ func (u *UserController) Register(c *gin.Context) {
 }
 
 func (u *UserController) Login(c *gin.Context) {
-	var body request.Login
+	var loginUser request.Login
 
-	c.BindJSON(&body)
+	if err := c.ShouldBindJSON(&loginUser); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": utilities.ParseError(err),
+		})
+		return
+	}
+
+	userFind := models.User{}
+	result := models.DB.Where("email = ?", loginUser.Email).First(&userFind)
+
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": userFind.InvalidLogin(),
+		})
+		return
+	}
+
+	if !utilities.CheckPasswordHash(loginUser.Password, userFind.Password) {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": userFind.InvalidLogin(),
+		})
+		return
+	}
+
+	token, _ := utilities.GenerateToken(jwt.MapClaims{"ID": userFind.ID})
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Success Login",
-		"body":    body,
+		"user":    userFind.GetResponse(),
+		"token":   token,
 	})
 }

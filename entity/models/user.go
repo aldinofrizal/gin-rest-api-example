@@ -34,6 +34,15 @@ func (u *User) GetResponse() response.User {
 	}
 }
 
+func (u *User) InvalidLogin() []utilities.ApiBindError {
+	return []utilities.ApiBindError{
+		{
+			Field: "email/password",
+			Msg:   "Invalid value",
+		},
+	}
+}
+
 func (u *User) IsEmailExist() error {
 	userFind := User{}
 	result := DB.Where("email = ?", u.Email).First(&userFind)
