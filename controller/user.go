@@ -88,3 +88,10 @@ func (u *UserController) Login(c *gin.Context) {
 		"token":   token,
 	})
 }
+
+func (u *UserController) CurrentLoggedUser(c *gin.Context) {
+	loggedUser := c.MustGet("user").(*models.User)
+	c.JSON(http.StatusOK, gin.H{
+		"user": loggedUser.GetResponse(),
+	})
+}

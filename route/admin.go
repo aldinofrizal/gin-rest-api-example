@@ -12,15 +12,16 @@ func SetupAdminRoute(r *gin.RouterGroup) {
 	{
 		users.POST("/register", userController.Register)
 		users.POST("/login", userController.Login)
+		users.GET("/me", middleware.Authentication(), userController.CurrentLoggedUser)
 	}
 
 	contents := r.Group("/contents")
 	contentController := controller.ContentController{}
 	contents.Use(middleware.Authentication())
 	{
-		contents.GET("/", contentController.Index)
+		contents.GET("", contentController.Index)
 		contents.GET("/:id", contentController.Detail)
-		contents.POST("/", contentController.Create)
+		contents.POST("", contentController.Create)
 		contents.PUT("/:id", contentController.Update)
 		contents.DELETE("/:id",
 			middleware.ContentDeleteAuthorization(),

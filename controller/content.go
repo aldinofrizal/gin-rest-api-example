@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/aldinofrizal/gin-ozamot-api/entity/models"
@@ -13,9 +14,9 @@ type ContentController struct {
 }
 
 func (r *ContentController) Index(c *gin.Context) {
-	loggedUser := c.MustGet("user").(*models.User)
+	// loggedUser := c.MustGet("user").(*models.User)
 	contents := []models.Content{}
-	result := models.DB.Where("author_id = ?", loggedUser.ID).Find(&contents)
+	result := models.DB.Joins("Author").Find(&contents)
 
 	if result.Error != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
@@ -33,11 +34,12 @@ func (r *ContentController) Index(c *gin.Context) {
 func (r *ContentController) Detail(c *gin.Context) {
 	id := c.Param("id")
 	content := models.Content{}
-	result := models.DB.First(&content, id)
+	result := models.DB.Joins("Author").First(&content, id)
 
-	if result.Error != nil {
+	if result.Error != nil || result.RowsAffected == 0 {
+		fmt.Println(result.Error.Error())
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"message": "internal server error",
+			"message": result.Error.Error(),
 		})
 		return
 	}
@@ -81,12 +83,37 @@ func (r *ContentController) Create(c *gin.Context) {
 
 func (r *ContentController) Update(c *gin.Context) {
 	id := c.Param("id")
-	var body request.Content
-	c.BindJSON(&body)
+	var updateData request.Content
+	if err := c.ShouldBindJSON(&updateData); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": utilities.ParseError(err),
+		})
+		return
+	}
+
+	result := models.DB.Model(&models.Content{}).Where("id = ?", id).Updates(&models.Content{
+		Name:        updateData.Name,
+		Description: updateData.Description,
+		ImageUrl:    updateData.ImageUrl,
+	})
+
+	if result.Error != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": result.Error.Error(),
+		})
+		return
+	}
+
+	if result.RowsAffected == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "resource not found",
+		})
+		return
+	}
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Content Update",
-		"body":    body,
+		"body":    updateData,
 		"id":      id,
 	})
 }

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/aldinofrizal/gin-ozamot-api/entity/models"
@@ -53,7 +54,8 @@ func ContentDeleteAuthorization() gin.HandlerFunc {
 			return
 		}
 
-		if contentToDelete.ID != loggedUser.ID {
+		fmt.Println("----", contentToDelete.AuthorId, "00000", loggedUser.ID)
+		if contentToDelete.AuthorId != loggedUser.ID {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": "Please provide valid access token in your headers",
 			})
