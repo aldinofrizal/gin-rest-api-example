@@ -16,7 +16,7 @@ type ContentController struct {
 func (r *ContentController) Index(c *gin.Context) {
 	// loggedUser := c.MustGet("user").(*models.User)
 	contents := []models.Content{}
-	result := models.DB.Joins("Author").Find(&contents)
+	result := models.DB.Preload("Author").Find(&contents)
 
 	if result.Error != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
