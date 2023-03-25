@@ -80,12 +80,51 @@ func (u *UserController) Login(c *gin.Context) {
 		return
 	}
 
+	if !userFind.IsActive {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"message": "please activate your account",
+		})
+		return
+	}
+
 	token, _ := utilities.GenerateToken(jwt.MapClaims{"ID": userFind.ID})
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Success Login",
 		"user":    userFind.GetResponse(),
 		"token":   token,
+	})
+}
+
+func (u *UserController) Verify(c *gin.Context) {
+	verifyToken := c.Query("verificationCode")
+	claims, err := utilities.DecodeToken(verifyToken)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "Please provide valid verification code",
+		})
+		return
+	}
+
+	user := models.User{}
+	result := models.DB.First(&user, claims["ID"])
+	if result.Error != nil || result.RowsAffected == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "Please provide valid verification code",
+		})
+		return
+	}
+
+	user.IsActive = true
+	if err := models.DB.Save(&user).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "Please provide valid verification code",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "success verify account",
 	})
 }
 

@@ -4,16 +4,20 @@ import (
 	"errors"
 
 	"github.com/aldinofrizal/gin-ozamot-api/entity/response"
+	"github.com/aldinofrizal/gin-ozamot-api/services/mailer"
 	"github.com/aldinofrizal/gin-ozamot-api/utilities"
+	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Name     string    `gorm:"not null"`
-	Email    string    `gorm:"uniqueIndex;not null"`
-	Password string    `gorm:"not null"`
-	Contents []Content `gorm:"foreignKey:AuthorId"`
+	Name             string `gorm:"not null"`
+	Email            string `gorm:"uniqueIndex;not null"`
+	Password         string `gorm:"not null"`
+	VerificationCode string
+	IsActive         bool
+	Contents         []Content `gorm:"foreignKey:AuthorId"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
@@ -24,14 +28,26 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	}
 
 	u.Password = hashedPassword
+	u.IsActive = false
+	return
+}
+
+func (u *User) AfterCreate(tx *gorm.DB) (err error) {
+	generatedToken, _ := utilities.GenerateToken(jwt.MapClaims{"ID": u.ID, "IsVerification": true})
+	u.VerificationCode = generatedToken
+	go func() {
+		DB.Save(&u)
+		mailer.RegisterMail(u.Email, u.VerificationCode)
+	}()
 	return
 }
 
 func (u *User) GetResponse() response.User {
 	return response.User{
-		ID:    u.ID,
-		Name:  u.Name,
-		Email: u.Email,
+		ID:       u.ID,
+		Name:     u.Name,
+		Email:    u.Email,
+		IsActive: u.IsActive,
 	}
 }
 
