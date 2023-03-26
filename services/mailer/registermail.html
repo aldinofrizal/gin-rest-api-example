@@ -1,0 +1,13 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+</head>
+<body>
+  <p>
+    <strong>Hello {{.Email}}</strong>
+    please verify your account
+    <strong>verification code: {{.Code}}</strong>
+  </p>
+  <a href="http://localhost:8080/api/v1/users/verify?verificationCode={{.Code}}">verify</a>
+</body>
+</html>
