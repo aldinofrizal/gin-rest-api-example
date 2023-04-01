@@ -3,7 +3,7 @@ package route
 import (
 	"net/http"
 
-	"github.com/aldinofrizal/gin-ozamot-api/services/mailer"
+	"github.com/aldinofrizal/gin-rest-api-example/services/mailer"
 	"github.com/gin-gonic/gin"
 )
 

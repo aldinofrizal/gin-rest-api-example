@@ -1,8 +1,8 @@
 package route
 
 import (
-	"github.com/aldinofrizal/gin-ozamot-api/controller"
-	"github.com/aldinofrizal/gin-ozamot-api/middleware"
+	"github.com/aldinofrizal/gin-rest-api-example/controller"
+	"github.com/aldinofrizal/gin-rest-api-example/middleware"
 	"github.com/gin-gonic/gin"
 )
 

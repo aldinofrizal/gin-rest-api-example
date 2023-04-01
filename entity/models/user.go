@@ -3,9 +3,9 @@ package models
 import (
 	"errors"
 
-	"github.com/aldinofrizal/gin-ozamot-api/entity/response"
-	"github.com/aldinofrizal/gin-ozamot-api/services/mailer"
-	"github.com/aldinofrizal/gin-ozamot-api/utilities"
+	"github.com/aldinofrizal/gin-rest-api-example/entity/response"
+	"github.com/aldinofrizal/gin-rest-api-example/services/mailer"
+	"github.com/aldinofrizal/gin-rest-api-example/utilities"
 	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/gorm"
 )

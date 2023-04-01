@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/aldinofrizal/gin-ozamot-api/entity/models"
-	"github.com/aldinofrizal/gin-ozamot-api/route"
-	"github.com/aldinofrizal/gin-ozamot-api/services/mailer"
+	"github.com/aldinofrizal/gin-rest-api-example/entity/models"
+	"github.com/aldinofrizal/gin-rest-api-example/route"
+	"github.com/aldinofrizal/gin-rest-api-example/services/mailer"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"

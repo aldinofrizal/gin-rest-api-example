@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/aldinofrizal/gin-ozamot-api/entity/models"
-	"github.com/aldinofrizal/gin-ozamot-api/utilities"
+	"github.com/aldinofrizal/gin-rest-api-example/entity/models"
+	"github.com/aldinofrizal/gin-rest-api-example/utilities"
 	"github.com/gin-gonic/gin"
 )
 

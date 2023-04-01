@@ -1,4 +1,4 @@
-module github.com/aldinofrizal/gin-ozamot-api
+module github.com/aldinofrizal/gin-rest-api-example
 
 go 1.19
 
