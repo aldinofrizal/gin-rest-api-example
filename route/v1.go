@@ -29,4 +29,11 @@ func SetupAdminRoute(r *gin.RouterGroup) {
 			contentController.Delete,
 		)
 	}
+
+	news := r.Group("/news")
+	newsController := controller.NewsController{}
+	news.Use(middleware.Authentication())
+	{
+		news.GET("/", newsController.Index)
+	}
 }

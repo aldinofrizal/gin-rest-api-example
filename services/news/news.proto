@@ -1,0 +1,20 @@
+syntax = "proto3";
+package news;
+
+option go_package = "./services/news";
+
+message Item {
+  string title = 1;
+  string url = 2;
+  string image_url = 3;
+}
+
+message ItemResponse {
+  repeated Item items = 1;
+}
+
+message EmptyParams {}
+
+service NewsService {
+  rpc GetNews(EmptyParams) returns (ItemResponse) {}
+}
