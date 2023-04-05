@@ -28,6 +28,7 @@ func SetupAdminRoute(r *gin.RouterGroup) {
 	tvshows.Use(middleware.Authentication())
 	{
 		tvshows.GET("", tvshowsController.Index)
+		tvshows.GET("/:id", tvshowsController.Detail)
 	}
 
 	contents := r.Group("/contents")
