@@ -16,6 +16,20 @@ func SetupAdminRoute(r *gin.RouterGroup) {
 		users.GET("/verify", userController.Verify)
 	}
 
+	news := r.Group("/news")
+	newsController := controller.NewsController{}
+	news.Use(middleware.Authentication())
+	{
+		news.GET("", newsController.Index)
+	}
+
+	tvshows := r.Group("/tvshows")
+	tvshowsController := controller.TvshowsController{}
+	tvshows.Use(middleware.Authentication())
+	{
+		tvshows.GET("", tvshowsController.Index)
+	}
+
 	contents := r.Group("/contents")
 	contentController := controller.ContentController{}
 	contents.Use(middleware.Authentication())
@@ -28,12 +42,5 @@ func SetupAdminRoute(r *gin.RouterGroup) {
 			middleware.ContentDeleteAuthorization(),
 			contentController.Delete,
 		)
-	}
-
-	news := r.Group("/news")
-	newsController := controller.NewsController{}
-	news.Use(middleware.Authentication())
-	{
-		news.GET("/", newsController.Index)
 	}
 }

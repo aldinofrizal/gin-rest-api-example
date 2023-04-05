@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/aldinofrizal/gin-rest-api-example/entity/models"
@@ -15,7 +14,6 @@ import (
 
 func Authentication() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// get token from c.Request.Header.Get("access_token")
 		token := c.Request.Header.Get("access_token")
 
 		claims, err := utilities.DecodeToken(token)
@@ -54,7 +52,6 @@ func ContentDeleteAuthorization() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println("----", contentToDelete.AuthorId, "00000", loggedUser.ID)
 		if contentToDelete.AuthorId != loggedUser.ID {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": "Please provide valid access token in your headers",
