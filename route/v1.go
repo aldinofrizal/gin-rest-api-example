@@ -30,18 +30,4 @@ func SetupAdminRoute(r *gin.RouterGroup) {
 		tvshows.GET("", tvshowsController.Index)
 		tvshows.GET("/:id", tvshowsController.Detail)
 	}
-
-	contents := r.Group("/contents")
-	contentController := controller.ContentController{}
-	contents.Use(middleware.Authentication())
-	{
-		contents.GET("", contentController.Index)
-		contents.GET("/:id", contentController.Detail)
-		contents.POST("", contentController.Create)
-		contents.PUT("/:id", contentController.Update)
-		contents.DELETE("/:id",
-			middleware.ContentDeleteAuthorization(),
-			contentController.Delete,
-		)
-	}
 }

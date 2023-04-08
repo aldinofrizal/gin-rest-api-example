@@ -17,7 +17,6 @@ type User struct {
 	Password         string `gorm:"not null"`
 	VerificationCode string
 	IsActive         bool
-	Contents         []Content `gorm:"foreignKey:AuthorId"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
