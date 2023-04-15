@@ -30,4 +30,13 @@ func SetupAdminRoute(r *gin.RouterGroup) {
 		tvshows.GET("", tvshowsController.Index)
 		tvshows.GET("/:id", tvshowsController.Detail)
 	}
+
+	bookmark := r.Group("/bookmarks")
+	bookmarkController := controller.BookmarkController{}
+	bookmark.Use(middleware.Authentication())
+	{
+		bookmark.POST("", bookmarkController.Create)
+		bookmark.GET("", bookmarkController.Index)
+		bookmark.DELETE("/:tmdb_id", bookmarkController.Delete)
+	}
 }

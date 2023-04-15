@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/aldinofrizal/gin-rest-api-example/entity/models"
 	"github.com/aldinofrizal/gin-rest-api-example/services/tmdb"
 	"github.com/aldinofrizal/gin-rest-api-example/utilities"
 	"github.com/gin-gonic/gin"
@@ -65,7 +66,14 @@ func (r *TvshowsController) Detail(c *gin.Context) {
 		return
 	}
 
+	user := c.MustGet("user").(*models.User)
+	bookmark := models.Bookmark{
+		UserId: int(user.ID),
+		TmdbId: intId,
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"result": resp,
+		"result":     resp,
+		"bookmarked": bookmark.IsExist(),
 	})
 }

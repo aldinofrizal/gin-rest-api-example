@@ -3,14 +3,13 @@ package route
 import (
 	"net/http"
 
-	"github.com/aldinofrizal/gin-rest-api-example/services/mailer"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRoute(r *gin.Engine) {
 
 	r.Use(gin.CustomRecovery(func(c *gin.Context, recovered any) {
-		go mailer.RecoveryMail(recovered.(string), c.Request.Host+c.Request.URL.Path)
+		// go mailer.RecoveryMail(recovered.(string), c.Request.Host+c.Request.URL.Path)
 		if _, ok := recovered.(string); ok {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"message": "Internal Server Error, we already received your error and will handle it soon!",

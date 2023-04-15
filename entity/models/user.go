@@ -17,6 +17,7 @@ type User struct {
 	Password         string `gorm:"not null"`
 	VerificationCode string
 	IsActive         bool
+	Bookmarks        []Bookmark
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
