@@ -13,6 +13,8 @@ func RegisterMail(email, verificationCode string) {
 	}{email, verificationCode}
 	if err := m.ParseTemplate("registermail.html", d); err == nil {
 		m.SendMail()
+	} else {
+		fmt.Println(err)
 	}
 }
 

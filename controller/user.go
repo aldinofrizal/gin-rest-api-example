@@ -48,7 +48,7 @@ func (u *UserController) Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Success Regiseter",
+		"message": "Register success, we sent you activation email to activate your account",
 		"user":    user.GetResponse(),
 	})
 }
