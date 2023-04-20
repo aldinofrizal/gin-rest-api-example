@@ -23,10 +23,5 @@ func main() {
 	models.DBConnect()
 	route.SetupRoute(r)
 
-	r.Run()
+	r.Run("0.0.0.0:8080")
 }
-
-/*
-mailer
-multer
-*/

@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY . ./
 
-EXPOSE 80
+EXPOSE 8080
 
 RUN go build -o /app
 
@@ -20,6 +20,6 @@ WORKDIR /
 COPY --from=build /app /app
 COPY ./services/mailer/*html /services/mailer/
 
-EXPOSE 80
+EXPOSE 8080
 
 ENTRYPOINT [ "/app" ]
